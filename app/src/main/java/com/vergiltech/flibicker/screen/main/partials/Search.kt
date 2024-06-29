@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -24,16 +25,18 @@ fun Search(homeViewModel: HomeViewModel) {
     var providedValue by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Top) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.Absolute.SpaceBetween
+        TextField(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+            value = providedValue,
+            onValueChange = { providedValue = it },
+            shape = Shapes().extraLarge
+        )
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { homeViewModel.searchBook(providedValue) }
         ) {
-            TextField(value = providedValue, onValueChange = { providedValue = it })
-            Button(onClick = { homeViewModel.searchBook(providedValue) }) {
-                Text(text = "Search")
-            }
+            Text(text = "Search")
         }
     }
 }
