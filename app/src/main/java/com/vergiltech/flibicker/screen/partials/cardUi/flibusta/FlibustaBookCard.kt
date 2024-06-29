@@ -34,7 +34,7 @@ fun ElevatedBookCard(
     content: String?,
     links: List<Link>?
 ) {
-    val baseFlibustaUrl = "https://flibusta.site"
+    val baseFlibustaUrl = "http://flibusta.site"
 
     ElevatedCard(
         elevation = CardDefaults.cardElevation(

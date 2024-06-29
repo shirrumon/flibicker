@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Context.DOWNLOAD_SERVICE
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -23,6 +24,8 @@ class DownloadProcessing @Inject constructor(
             context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         }
 
+        Log.e("download stats: ", "Url: $url\nfilename: $fileName\nmime: $mime")
+
         val downloadRequest = DownloadManager.Request(Uri.parse(url))
             .setAllowedOverMetered(true)
             .setAllowedOverRoaming(true)
@@ -32,6 +35,6 @@ class DownloadProcessing @Inject constructor(
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
-        val downloadId = downloadManager.enqueue(downloadRequest)
+        downloadManager.enqueue(downloadRequest)
     }
 }
