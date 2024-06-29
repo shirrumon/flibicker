@@ -1,6 +1,7 @@
 package com.vergiltech.flibicker.screen.main
 
 import android.text.Html
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -66,7 +68,22 @@ fun HomeScreen (
                     }
                     Spacer(modifier = Modifier.height(2.dp))
 
-
+                    bookEntry.link?.forEach { link ->
+                        link.type?.let {
+                            if(link.type == "application/fb2+zip") {
+                                Button(onClick = {
+                                    Log.e("download: ", "http://flibusta.site${link.href}")
+                                    homeViewModel.startBookDownload(
+                                        url = "https://flibusta.site${link.href}",
+                                        fileName = "Book.fb2.zip",
+                                        mime = it
+                                    )
+                                }) {
+                                    Text(text = "Download book")
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

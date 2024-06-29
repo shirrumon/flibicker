@@ -88,6 +88,7 @@ dependencies {
         exclude(module = "xpp3")
 
     }
+    implementation(libs.androidx.media3.exoplayer)
 
     kapt(libs.hilt.android.compiler)
     testImplementation(libs.junit)
