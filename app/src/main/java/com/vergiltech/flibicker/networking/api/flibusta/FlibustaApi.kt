@@ -3,6 +3,7 @@ package com.vergiltech.flibicker.networking.api.flibusta
 import android.util.Log
 import com.vergiltech.flibicker.networking.api.flibusta.mapper.BookMapper
 import com.vergiltech.flibicker.networking.api.flibusta.mapper.BookMapper.serializeBookSearch
+import com.vergiltech.flibicker.networking.api.parser.CommonParser
 import com.vergiltech.flibicker.networking.core.Ktor
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
@@ -17,7 +18,7 @@ class FlibustaApi @Inject constructor(
     private val client = ktorConfig.client()
     private val url = "http://flibusta.site/opds"
 
-    suspend fun searchBook(bookName: String): BookMapper.Root? {
+    suspend fun searchBook(bookName: String): CommonParser? {
         val response: HttpResponse = client.get(getSearchBookPattern(bookName))
         val data = serializeBookSearch(response.bodyAsText())
 

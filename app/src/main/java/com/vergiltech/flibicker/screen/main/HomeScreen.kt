@@ -2,7 +2,6 @@ package com.vergiltech.flibicker.screen.main
 
 import android.text.Html
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vergiltech.flibicker.networking.api.parser.CommonParser
 import com.vergiltech.flibicker.screen.main.partials.Search
 import com.vergiltech.flibicker.screen.main.vm.HomeViewModel
 
@@ -34,7 +34,9 @@ fun HomeScreen (
         .verticalScroll(rememberScrollState())) {
         Search(homeViewModel = homeViewModel)
 
-        bookList?.let { list ->
+        bookList?.let {
+            val list = it as CommonParser.FlibustaBookList
+
             Spacer(modifier = Modifier.height(25.dp))
             list.entries?.forEach {  bookEntry ->
                 Column(modifier = Modifier

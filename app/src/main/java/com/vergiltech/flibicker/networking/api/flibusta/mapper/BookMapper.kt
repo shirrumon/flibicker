@@ -1,6 +1,7 @@
 package com.vergiltech.flibicker.networking.api.flibusta.mapper
 
 import android.util.Log
+import com.vergiltech.flibicker.networking.api.parser.CommonParser
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
@@ -9,24 +10,18 @@ import org.simpleframework.xml.core.Persister
 import java.io.StringReader
 
 object BookMapper {
-    fun serializeBookSearch(responseString: String?): Root? {
+    fun serializeBookSearch(responseString: String?): CommonParser? {
         try {
             val serializer: Serializer = Persister()
             val reader = StringReader(responseString)
 
-            return serializer.read(Root::class.java, reader, false)
+            return serializer.read(CommonParser.FlibustaBookList::class.java, reader, false)
         } catch (e: Exception) {
             Log.e("Flibusta deserialize error: ", e.message.toString())
         }
 
         return null
     }
-
-    @org.simpleframework.xml.Root(strict = false, name = "feed")
-    data class Root @JvmOverloads constructor(
-        @field:ElementList(name = "entry", inline = true, required = false)
-        var entries: List<Entry>? = null
-    )
 
     @org.simpleframework.xml.Root(strict = false, name = "entry")
     data class Entry @JvmOverloads constructor(
