@@ -49,6 +49,7 @@ fun SearchBar(
     backgroundColor: Color = Color.White,
     onSearchClicked: () -> Unit = {},
     onTextChange: (String) -> Unit = {},
+    onClearClicked: () -> Unit = {}
 ) {
     var text by remember { mutableStateOf(TextFieldValue()) }
     Row(
@@ -110,7 +111,11 @@ fun SearchBar(
                 Icon(
                     modifier = modifier
                         .fillMaxSize()
-                        .padding(10.dp),
+                        .padding(10.dp)
+                        .clickable {
+                            text = TextFieldValue()
+                            onClearClicked()
+                        },
                     imageVector = Icons.Outlined.Clear,
                     contentDescription = "clear",
                     tint = MaterialTheme.colorScheme.primary,

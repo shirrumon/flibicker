@@ -16,13 +16,33 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val flibustaApi: FlibustaApi,
     private val downloadProcessing: DownloadProcessing
-): ViewModel() {
-    private val _bookSearchResult = MutableStateFlow<CommonParser?>(null)
-    val bookSearchResult = _bookSearchResult.asStateFlow()
+) : ViewModel() {
+    private val _uiState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.DEFAULT)
+    private val _processingState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _screenCommunicateString: MutableStateFlow<CommunicateState> =
+        MutableStateFlow(CommunicateState.DEFAULT)
+    private val _searchResult: MutableStateFlow<CommonParser?> = MutableStateFlow(null)
+
+    /**
+     * public realization section
+     */
+    val searchResult = _searchResult.asStateFlow()
+    val processingState = _processingState.asStateFlow()
+    val screenCommunicateString = _screenCommunicateString.asStateFlow()
 
     fun searchBook(query: String) {
+        _uiState.value = ScreenState.LOADING
         viewModelScope.launch(Dispatchers.IO) {
-            _bookSearchResult.value = flibustaApi.searchBook(query)
+            val responseData = flibustaApi.searchBook(query)
+
+            if(responseData is CommonParser.FlibustaBookList) {
+                if(responseData.entries != null) {
+                    _searchResult.value = responseData
+                    _uiState.value = ScreenState.SUCCESS
+                } else {
+                    _uiState.value = ScreenState.NO_DATA_FIND
+                }
+            }
         }
     }
 
@@ -39,4 +59,49 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
+
+    fun revertToDefault() {
+        _uiState.value = ScreenState.DEFAULT
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.collect { collectableState ->
+                when (collectableState) {
+                    ScreenState.LOADING -> {
+                        _processingState.value = true
+                    }
+
+                    ScreenState.SUCCESS -> {
+                        _processingState.value = false
+                        _screenCommunicateString.value = CommunicateState.PAGE
+                    }
+
+                    ScreenState.NO_DATA_FIND -> {
+                        _processingState.value = false
+                        _screenCommunicateString.value = CommunicateState.EMPTY
+                    }
+
+                    ScreenState.DEFAULT -> {
+                        _processingState.value = false
+                        _screenCommunicateString.value = CommunicateState.DEFAULT
+                        _searchResult.value = null
+                    }
+                }
+            }
+        }
+    }
+}
+
+private enum class ScreenState {
+    DEFAULT,
+    LOADING,
+    SUCCESS,
+    NO_DATA_FIND,
+}
+
+enum class CommunicateState {
+    DEFAULT,
+    EMPTY,
+    PAGE
 }
